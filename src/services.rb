@@ -139,7 +139,7 @@ new_user = { "email" => "dave@mail.com",
 
 # pp session.login(credentials: {email: "dave@mail.com", password: "123456"}) # Dave account
 # pp session.login(credentials: {email: "test7@mail.com", password: "123456"}) # Group account
-pp session.index_categories
+# pp session.index_categories
 
 new_category = { "name": "TestCategory2",
                  "transaction_type": "expense" }

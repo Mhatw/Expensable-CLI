@@ -1,7 +1,7 @@
 require "date"
 class Transactions
   def initialize; end
-
+ 
   def show_tr; end
 
   def add_tr; end
