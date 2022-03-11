@@ -4,7 +4,12 @@ class Categories
 
   def create_cat; end
 
-  def show_cat; end
+  def show_cat
+  
+    
+  
+  
+  end
 
   def update_cat; end
 
