@@ -6,7 +6,6 @@ class Expensable
   def start
     prompt_sf("Welcome to Expensable") # prompt welcome
     show_get_do_actions # show options and start loop
-    prompt_sf("Thanks for using Expensable") # prompt goodbye
   end
 
   def show_get_do_actions
@@ -19,6 +18,8 @@ class Expensable
         puts "login"
       when "create_user"
         puts "createn"
+      when "exit"
+        prompt_sf("Thanks for using Expensable") # prompt goodbye
       else
         puts "Invalid option"
       end
