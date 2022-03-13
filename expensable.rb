@@ -3,6 +3,7 @@ require_relative "src/services"
 require_relative "src/extra"
 require_relative "src/categories"
 
+# rubocop:disable Metrics/ClassLength
 class Expensable
   include Extra
   include Services
@@ -22,33 +23,37 @@ class Expensable
     loop do
       clear_screen
       prompt_sf("Welcome to Expensable") # prompt welcome
-      print "login | create_user | exit\n> "
+      puts
+      puts style.view("login | create_user | exit", bold: false, italic: true)
+      print "> "
       case gets.chomp.downcase
       when "login"
-        Categories.new(@session, @current_date) if login # Session need to be added Categorie.new(@session, @current_date)
+        Categories.new(@session, @current_date) if login
       when "create_user"
-        Categories.new(@session, @current_date) if create # Session need to be added Categorie.new(@session, @current_date)
+        Categories.new(@session, @current_date) if create
       when "exit"
-        @session.logout
-        prompt_sf("Thanks for using Expensable") # prompt goodbye
-        sleep(2)
+        logout
         break
       else
-        puts "\tInvalid option"
+        puts error_m("\tInvalid option")
         sleep(0.5)
       end
     end
   end
 
   def login
+    puts
     email = ask_something("Email: ", "Cannot be blank") { |x| !x.empty? }
     password = ask_something("Password: ", "Cannot be blank") { |x| !x.empty? }
+    loading(3)
     tsession = @session.login(credentials: { email: email, password: password })
     if tsession[:code] == 200
-      puts "\tWelcome back #{tsession[:content][:first_name]} #{tsession[:content][:last_name]}"
+      tusername = "#{tsession[:content][:first_name]} #{tsession[:content][:last_name]}"
+      print style.view("\tWelcome back ", :green)
+      puts style.view(tusername, :green, bold: true)
       true
     else
-      puts "\t#{tsession[:content][:errors][0]}"
+      puts error_m("\t#{tsession[:content][:errors][0]}")
       false
     end
   ensure
@@ -56,33 +61,45 @@ class Expensable
   end
 
   def create
-    t_session = @session.create_user(user_data: define_new_user)
-    if t_session[:code] == 201
-      puts "\tWelcome to Expensable #{tsession[:content][:first_name]} #{tsession[:content][:last_name]}"
+    puts
+    tsession = @session.create_user(user_data: define_new_user)
+    loading(3)
+    if tsession[:code] == 201
+      tusername = "#{tsession[:content][:first_name]} #{tsession[:content][:last_name]}"
+      print style.view("\tWelcome Expensable ", :green)
+      puts style.view(tusername, :green, bold: true)
       true
     else
-      puts "\t#{tsession[:content][:errors][0]}"
+      puts error_m("\t#{tsession[:content][:errors][0]}")
       false
     end
   ensure
     sleep(1)
   end
 
+  def logout
+    clear_screen
+    @session.logout
+    prompt_sf("Thanks for using Expensable") # prompt goodbye
+    sleep(2)
+    clear_screen
+  end
+
+  private
+
   def prompt_sf(prompt)
     space = prompt.size < 34 ? (34 - prompt.size) / 2 : 0
     puts "#{'#' * 36}\n##{' ' * space}#{prompt} #{' ' * space}#\n#{'#' * 36}"
   end
 
-  private
-
   def ask_something(m_presentation, m_error = nil, &block)
     something = ""
     loop do
-      print m_presentation
+      print enfatize_m(m_presentation)
       something = gets.chomp
       break if block.nil? || block.call(something)
 
-      puts "\t#{m_error}"
+      puts "\t#{error_m(m_error)}"
     end
     something
   end
@@ -100,7 +117,16 @@ class Expensable
     user_data.merge!({ phone: phone }) unless phone.empty?
     user_data
   end
+
+  def error_m(message)
+    style.view(message, :red, bold: true, italic: true)
+  end
+
+  def enfatize_m(message)
+    style.view(message, bold: true)
+  end
 end
+# rubocop:enable Metrics/ClassLength
 
 app = Expensable.new
 app.start

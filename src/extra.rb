@@ -10,8 +10,8 @@ module Extra
     clear_screen
   end
 
-  def loading
-    5.times do
+  def loading(n_times = 5)
+    n_times.times do
       sleep 0.5
       print "."
     end
