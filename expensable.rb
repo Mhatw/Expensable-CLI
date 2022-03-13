@@ -5,7 +5,7 @@ require_relative "src/categories"
 
 class Expensable
   include Extra
-
+  include Services
   attr_accessor :style
 
   def initialize
@@ -25,9 +25,9 @@ class Expensable
       print "login | create_user | exit\n> "
       case gets.chomp.downcase
       when "login"
-        Categories.new if login # Session need to be added Categorie.new(@session, @current_date)
+        Categories.new(@session, @current_date) if login # Session need to be added Categorie.new(@session, @current_date)
       when "create_user"
-        Categories.new if create # Session need to be added Categorie.new(@session, @current_date)
+        Categories.new(@session, @current_date) if create # Session need to be added Categorie.new(@session, @current_date)
       when "exit"
         @session.logout
         prompt_sf("Thanks for using Expensable") # prompt goodbye

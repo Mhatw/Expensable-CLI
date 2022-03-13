@@ -10,6 +10,13 @@ module Extra
     clear_screen
   end
 
+  def loading
+    5.times do
+      sleep 0.5
+      print "."
+    end
+  end
+
   DIFF_COL = {
     "random" => :gray,
     "easy" => :green,

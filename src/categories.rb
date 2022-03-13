@@ -1,13 +1,18 @@
 require "date"
-require_relative "services"
-require_relative "m_categories"
 require "terminal-table"
+require_relative "m_categories"
+require_relative "services"
+require_relative "extra"
 
 class Categories
   include Mcategories
-  def initialize
-    @cat = Services::Session.new
-    @cat.login(credentials: { email: "test7@mail.com", password: "123456" })
+  include Extra
+  attr_accessor :style
+  def initialize(session = nil, date = Date.today)
+    @style = Colorizator
+    @cat = session.nil? ? Services::Session.new : session
+    @date_today = date
+    # @cat.login(credentials: { email: "test7@mail.com", password: "123456" })
     @index_cat = @cat.index_categories[:content]
     @month_var_cat = 5
     @toggle_value = "expense"
@@ -19,8 +24,13 @@ class Categories
     new_cat = cat_get_info
     new_cat_on = @cat.create_category(new_category: new_cat)
     @index_cat << new_cat_on[:content]
+    loading
+    puts style.view("\tCreated success", :green, bold: true, italic: true)
+    sleep(1)
     show_cat(@toggle_value)
   end
+
+
 
   def show_cat(type)
     @date_today = Date.today << @month_var_cat # trae fecha actual y le suma o resta dependiendo
@@ -76,9 +86,10 @@ class Categories
   end
 
   def menu
-    show_cat(@toggle_value)
     action = ""
     until action == "logout"
+      clear_screen
+      show_cat(@toggle_value)
       puts "create | show ID | update ID | delete ID\nadd-to ID | toggle | next | prev | logout"
       print "> "
       action = gets.chomp
@@ -86,7 +97,3 @@ class Categories
     end
   end
 end
-
-# menu provisional para testear
-app = Categories.new
-app

@@ -2,28 +2,33 @@ module Mcategories
   def cat_get_info
     category = print_get("Name: ")
     while category == ""
-      puts "Cannot be blank"
+      color_error("Cannot be blank")
       category = print_get("Name: ")
     end
 
     transaction_type = print_get("Transaction type: ")
     until ["income", "expense"].include?(transaction_type)
-      puts "Only income or expense"
+      color_error("Only income or expense")
       transaction_type = print_get("Transaction type: ")
     end
     { name: category, transaction_type: transaction_type }
+  end
+
+  def color_error(message)
+    puts style.view("\t#{message}",:red, italic: true, bold: true)
+    sleep(1)
   end
 
   # new_transaction = { "amount": 2000,"notes": "TestNotes","date": "2020-10-10" }
   def add_to_info
     amount = print_get("Amount: ")
     while amount == "" || !amount.to_i.positive?
-      puts "Cannot be zero"
+      color_error("Cannot be zero")
       amount = print_get("Amount: ")
     end
     date = print_get("Date: ")
     while date == "" || (valid_date(date)) == false
-      puts "Required format: YYYY-MM-DD"
+      color_error("Required format: YYYY-MM-DD")
       date = print_get("Date: ")
     end
     notes = print_get("Notes: ")
@@ -31,7 +36,7 @@ module Mcategories
   end
 
   def print_get(prompt)
-    print prompt
+    print (style.view(prompt, bold: true))
     gets.chomp
   end
 
@@ -68,7 +73,7 @@ module Mcategories
     elsif action != ""
       menu2(action)
     else
-      puts "Invalid option"
+      color_error("Invalid option")
     end
   end
 
@@ -82,7 +87,7 @@ module Mcategories
     elsif action == "toggle"
       toggle_cat
     else
-      puts "Invalid option"
+      color_error("Invalid option")
     end
   end
 end
