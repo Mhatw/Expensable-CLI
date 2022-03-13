@@ -15,7 +15,7 @@ module Mcategories
   end
 
   def color_error(message)
-    puts style.view("\t#{message}",:red, italic: true, bold: true)
+    puts style.view("\t#{message}", :red, italic: true, bold: true)
     sleep(1)
   end
 
@@ -36,7 +36,7 @@ module Mcategories
   end
 
   def print_get(prompt)
-    print (style.view(prompt, bold: true))
+    print(style.view(prompt, bold: true))
     gets.chomp
   end
 
@@ -62,8 +62,8 @@ module Mcategories
   def menu1(action)
     if action == "create"
       create_cat
-    elsif action == "show"
-      show_cat(@toggle_value)
+    elsif action.include? "show"
+      id_validation(action)[1] == false ? show_id(id_validation(action)[0]) : (puts "Not Found")
     elsif action == "next"
       next_cat
     elsif action == "prev"
